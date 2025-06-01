@@ -12,18 +12,26 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-        <link rel="stylesheet" href="style.css">
+        <link rel="icon" type="image/x-icon" href="static/assets/favicon.ico">
+        <link rel="stylesheet" href="static/css/style.css">
     </head>
     <body>
+        <div id="debug-menu">
+            <button class="btn btn--danger" id="debug-close">
+                Close dialog
+            </button>
+            <button class="btn btn--success" id="debug-open">
+                Open dialog
+            </button>
+        </div>
+        
         <!-- todo: accessibility -->
-        <div id="modal-overlay" class="modal-overlay--hidden">
+        <div id="modal-overlay" class="modal-overlay--closed">
             
             <form class="form form--modal">
-                <h1 class="modal-heading">Warning: Grid length high</h1>
+                <h1 class="modal-heading">Placeholder text</h1>
                 <p class="modal-description">
-                    A grid size of
-                    <span class="grid-size"></span>x<span class="grid-size"></span>
-                    may cause performance issues.
+                    This text should not appear. If it does, contact the site administrator.
                 </p>
                 
                 <button id="modal-abort" class="btn btn--danger">Abort</button>
@@ -32,7 +40,7 @@
         </div>
         
         <main>    
-            <article>
+            <article class="content">
                 <h1 class="mt-1">Grid Draw</h1>
                 <form class="form" action="#">
                     <label for="grid-size-input">Grid size (e.g 5 for a 5x5 grid):</label>
@@ -45,12 +53,12 @@
                 </form>
                 
                 <!-- todo: accessibility -->
-                <div id="grid-cells">
+                <div id="drawing-area">
                     
                 </div>
             </article>
         </main>
         
-        <script src="main.js"></script>
+        <script src="static/js/main.js"></script>
     </body>
 </html>
