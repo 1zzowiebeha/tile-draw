@@ -1,0 +1,188 @@
+/*========
+Resets
+======== */
+
+*, *::after, *::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background: #fdfdfa;
+    height: 100%;
+}
+
+
+h1, p, label, button, input {
+    font-family: "figtree", sans-serif;
+    color: #231112;
+}
+
+/*========
+Content area
+======== */
+
+.content {
+    display: grid;
+    justify-items: center;
+}
+
+/*========
+Forms
+======== */
+
+.form {
+    background: #fdfdfa;
+    border: 1px solid grey;
+    border-radius: 12px;
+    width: fit-content;
+    padding: 2rem 1rem;
+    
+    /* More maintainable property compared to margin-top
+       so as to override gap later on in the style. We could use collapsing margins,
+       but this makes more sense? idk actually */
+    display: grid;
+    row-gap: .5rem;
+    
+    input {
+        display: block;
+        font-size: 1rem;
+        padding: 0 0 0 .1rem;
+    }
+}
+
+/*========
+Modal background & Pop-up
+======== */
+
+@keyframes pop-up {
+    from {
+        opacity: 0;
+        transform: translate(0, 120px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+#debug-menu {
+    position: absolute;
+    z-index: 900;
+    left: 1rem;
+    top: 1rem;
+    border: 1px solid grey;
+    background: white;
+    border-radius: 12px;
+    padding: .5rem 1rem;
+}
+
+.form--modal {
+    transition: .6s opacity;
+}
+
+
+#modal-overlay {
+    background: rgba(0, 0, 0, 0);
+    
+    height: 100%;
+    width: 100%;
+    
+    position: absolute;
+    z-index: 1;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    transition: .6s background;
+    
+    /* #modal-overlay:not(&.modal-overlay--closed) .form--modal {
+        animation: 1s pop-up 1;
+    } */
+}
+
+#modal-overlay.modal-overlay--closed {
+    background: rgba(0, 0, 0, 0);
+    
+    .form--modal {
+        animation: .6s pop-up ease-in-out reverse 1;
+        animation-fill-mode: forwards;  
+    }
+}
+
+#modal-overlay.modal-overlay--opened {
+    background: rgba(0, 0, 0, .4);
+    
+    .form--modal {
+        animation: .6s pop-up ease-in-out 1; 
+        animation-fill-mode: forwards;  
+    }
+}
+
+/*========
+Drawing area
+======== */
+
+#drawing-area {
+    margin-top: 1rem;
+    width: 30rem;
+    aspect-ratio: 1/1;
+    border: 1px solid grey;
+    border-radius: 12px;
+}
+
+
+/*========
+Buttons
+======== */
+
+.btn {
+   padding: .5em 1em;
+   border-radius: 6px; 
+   background: lightgray;
+   border: none;
+}
+
+.btn.btn--danger {
+    background: rgb(223, 54, 54);
+    color: white;
+    
+    transition: .2s background;
+    &:hover {
+        cursor: pointer;
+        background: rgb(180, 47, 47);
+    }
+}
+
+.btn.btn--success {
+    background: rgb(108, 198, 94);
+    color: white;
+    
+    transition: .2s background;
+    &:hover {
+        cursor: pointer;
+        background: rgb(79, 176, 64);
+    }
+}
+
+/*========
+Utilities
+======== */
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+.mt-05 {
+    margin-top: .5rem;
+}
+
+.ml-05 {
+    margin-left: .5rem;
+}
