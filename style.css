@@ -1,0 +1,134 @@
+*, *::after, *::before {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background: #fdfdfa;
+    height: 100%;
+}
+
+article {
+    display: grid;
+    justify-items: center;
+}
+
+h1, p, label, button, input {
+    font-family: "figtree", sans-serif;
+    color: #231112;
+}
+
+.form {
+    background: #fdfdfa;
+    border: 1px solid grey;
+    border-radius: 12px;
+    width: fit-content;
+    padding: 2rem 1rem;
+    
+    /* more maintainable specificity so as to override gaps */
+    display: grid;
+    row-gap: .5rem;
+    
+    input {
+        display: block;
+        font-size: 1rem;
+        padding: 0 0 0 .1rem;
+    }
+}
+
+/*========
+Modal background & Pop-up
+======== */
+
+#modal-overlay {
+    
+    background: rgba(0, 0, 0,.4);
+    
+    height: 100%;
+    width: 100%;
+    
+    position: absolute;
+    z-index: 1;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    transition: .6s background;
+    
+    .form--modal {
+        animation: 1s pop-up 1;
+    }
+}
+
+#modal-overlay.modal-overlay--hidden {
+    background: rgba(0, 0, 0, 0);
+    
+    .form--modal {
+        opacity: 0;
+    }
+}
+
+@keyframes pop-up {
+    from {
+        opacity: 0;
+        transform: translate(0, 120px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+.btn {
+   padding: .5em 1em;
+   border-radius: 6px; 
+   background: lightgray;
+   border: none;
+}
+
+.btn.btn--danger {
+    background: rgb(223, 54, 54);
+    color: white;
+    
+    transition: .2s background;
+    &:hover {
+        cursor: pointer;
+        background: rgb(180, 47, 47);
+    }
+}
+
+.btn.btn--success {
+    background: rgb(108, 198, 94);
+    color: white;
+    
+    transition: .2s background;
+    &:hover {
+        cursor: pointer;
+        background: rgb(79, 176, 64);
+    }
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+#grid-cells {
+    margin-top: 1rem;
+    width: 30rem;
+    aspect-ratio: 1/1;
+    border: 1px solid grey;
+    border-radius: 12px;
+}
+
+.mt-05 {
+    margin-top: .5rem;
+}
+
+.ml-05 {
+    margin-left: .5rem;
+}
