@@ -25,19 +25,18 @@
             </button>
         </div>
         
-        <!-- todo: accessibility -->
-        <div id="modal-overlay" class="modal-overlay--closed">
-            
-            <form class="form form--modal">
+        <dialog id="warning-modal">
+            <form class="form form--modal" method="dialog">
+                
                 <h1 class="modal-heading">Placeholder text</h1>
                 <p class="modal-description">
                     This text should not appear. If it does, contact the site administrator.
                 </p>
                 
-                <button id="modal-abort" class="btn btn--danger">Abort</button>
-                <button id="modal-accept" class="btn btn--success">Create Grid</button>
+                <button id="modal-abort" class="btn btn--danger" name="abort" value="true">Abort</button>
+                <button id="modal-accept" class="btn btn--success" name="confirm" value="true">Create Grid</button>
             </form>
-        </div>
+        </dialog>
         
         <main>    
             <article class="content">
@@ -47,8 +46,8 @@
                     <input id="grid-size-input" type="number" min="1">
                     
                     <div class="mt-05">
-                        <button id="reset-grid-button" class="btn btn--danger">Reset Grid</button>
-                        <button id="create-grid-button" class="btn btn--success ml-05">Create Grid</button>
+                        <button id="reset-area-button" class="btn btn--danger">Reset Grid</button>
+                        <button id="fill-area-button" class="btn btn--success ml-05">Create Grid</button>
                     </div>
                 </form>
                 

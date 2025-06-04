@@ -2,157 +2,285 @@
  * @typedef {Number} Integer
  */
 
+
 document.addEventListener("DOMContentLoaded", function() {
     const drawingAreaElement = document.getElementById("drawing-area"); 
-    const createGridButton = document.getElementById("create-grid-button"); 
-    const resetGridButton = document.getElementById("reset-grid-button"); 
+    const fillAreaButton = document.getElementById("fill-area-button"); 
+    const resetAreaButton = document.getElementById("reset-area-button"); 
     const sizeInputElement = document.getElementById("grid-size-input"); 
     
-    const modalElement = document.getElementById("modal-overlay"); 
-    const popupElement = document.querySelector(".form--modal");
-    const popupHeadingElement = document.querySelector(".form--modal .modal-heading");
-    const popupDescriptionElement = document.querySelector(".form--modal .modal-description");
-    const popupSuccessButton = document.getElementById("modal-accept");
-    const popupAbortButton = document.getElementById("modal-abort");
+    const modalDialogElement = document.getElementById("warning-modal"); 
+        const modalFormElement = document.querySelector(".form--modal");
+            const modalHeadingElement = document.querySelector(".form--modal .modal-heading");
+            const modalDescriptionElement = document.querySelector(".form--modal .modal-description");
+            const modalSuccessButton = document.getElementById("modal-accept");
+            const modalAbortButton = document.getElementById("modal-abort");
     
-    // 1
-    const warningDesctructiveAction = {
+    // Warning 1 for promptWarningModal()
+    const warningDestructiveAction = {
         heading: "Drawing will be deleted",
-        description: "Are you sure you want to reset your canvas?"
+        description: "Are you sure you want to reset your canvas?",
+        confirmation_text: 'Delete Grid',
+        abort_text: 'Abort',
     }
     
-    // 2
+    // Warning 2 for promptWarningModal()
     const warningGridSizeHigh = {
         heading: "Grid length high",
         description: `
             A grid size of
-            {0}x{1}</span>
+            {0}x{1}
             may cause performance issues.
-        `
+        `,
+        confirmation_text: 'Create Grid',
+        abort_text: 'Abort',
     }
     
     /**
-     * Populate the grid with cells.
-     * * @param {Integer} grid_size - Length and width of grid area
+     * Interpolates variables into a string.
+     * Taken from: https://www.geeksforgeeks.org/javascript-string-formatting/
+     * Will replace even if the user wants to have a string with a {<digit>} literal,
+     * where <digit> is equal to an item's index within the passed ...values.
+     * @param {String} str - String to format variables into.
+     * @param {...String} values - Values to format into string.
      */
-    function createGrid(grid_size) {
-        return;
+    function format(str, ...values) {
+        return str.replace(/{(\d+)}/g, function(match, index) {
+            return typeof values[index] !== 'undefined' ? values[index] : match;
+        });
     }
     
     /**
-     * Remove all cells from the grid.
+     * Return a boolean to denote whether tha passed object is
+     * ... a function type or not.
+     * Taken from: https://stackoverflow.com/a/55785839/12637568
+     * @param {Any} value - Any object
      */
-    function destroyGrid() {
-        return;
+    function isFunction(value) {
+        if (value) {
+            return Object.prototype.toString.call(value) === "[object Function]"
+                    || "function" === typeof value
+                    || value instanceof Function;
+            
+        }
+        else {
+            return false;
+        }
+       
+    }
+
+    /**
+     * Invoked when a drawing area tile is moused over.
+     * * @param {Event} event - Event provided by the event listener.
+     */
+    function tileHoverCallback(event) {        
+        const tile = event.target;
+        
+        const newBrightnessValue = tile.dataset.brightness - 0.1;
+        tile.style.filter = 'brightness(' + newBrightnessValue + ')';
+        
+        // Store brightness in a data attribute so we don't need to parse
+        //  the style string for later reference.
+        tile.dataset.brightness = newBrightnessValue;
+    }
+    
+    /**
+     * Populate the drawing area with tile divs.
+     * * @param {Integer} area_size - Length and width of tile area
+     */
+    function fillDrawingArea(area_size) {
+        drawingAreaElement.innerHTML = "";
+        
+        for (let i = 0; i < area_size * area_size; i++) {
+            const newTileElement = document.createElement('div');
+            
+            newTileElement.addEventListener('mouseover', tileHoverCallback);
+            
+            drawingAreaElement.appendChild(newTileElement);
+            
+            const portionOfMainAxisLength = (1 / area_size) * 100;
+            newTileElement.style.flexBasis = portionOfMainAxisLength + "%";
+            
+            newTileElement.classList.add('drawing-area__tile');
+            newTileElement.dataset.brightness = 1;
+        }
+    }
+    
+    /**
+     * Reset the brightness of all tile divs in the drawing area.
+     */
+    function resetDrawingArea() {
+        for (const tile of drawingAreaElement.children) {
+            tile.style.filter = 'brightness(1)';
+            tile.dataset.brightness = 1;
+        }
     }
     
     /**
      * Open animation for the modal window.
      */
-    function openModal() {
-        modalElement.classList.remove('modal-overlay--closed');
-        modalElement.classList.add('modal-overlay--opened');
+    // function openModal() {
+    //     for (const animation of modalElement.getAnimations()) {
+    //         if (
+    //             animation.effect instanceof KeyframeEffect &&
+    //             modalElement.contains(animation.effect.target)
+    //         ) {
+    //         animation.cancel();
+    //         }
+    //     }
+  
+    //     modalElement.classList.remove('modal-overlay--closed');
         
-        elem.classList = "";
-        elem.offsetWidth; // force reflow
-    }
+    //     modalElement.offsetWidth;
+        
+    //     modalElement.classList.add('modal-overlay--opened');
+        
+    //     modalElement.offsetWidth; // force reflow
+    // }
     
     /**
      * Close animation for the modal window.
      */
-    function closeModal() {
-        modalElement.classList.remove('modal-overlay--opened');
-        modalElement.classList.add('modal-overlay--closed');
+    // function closeModal() {
+    //     for (const animation of modalElement.getAnimations()) {
+    //         if (
+    //             animation.effect instanceof KeyframeEffect &&
+    //             modalElement.contains(animation.effect.target)
+    //         ) {
+    //         animation.cancel();
+    //         animation.play();
+    //         }
+    //     }
         
-        elem.classList = "";
-        elem.offsetWidth; // force reflow
-    }
+    //     modalElement.classList.remove('modal-overlay--opened');
+        
+    //     void modalElement.offsetWidth;
+        
+    //     modalElement.classList.add('modal-overlay--closed');
+        
+    //     for (const animation of modalElement.getAnimations()) {
+    //         if (
+    //             animation.effect instanceof KeyframeEffect &&
+    //             modalElement.contains(animation.effect.target)
+    //         ) {
+    //         animation.cancel();
+    //         animation.play();
+    //         }
+    //     }
+        
+    //     modalElement.offsetWidth; // force reflow
+    // }
     
     /**
      * Prompt the user to confirm their action.
      *  1- User's chosen grid size may cause performance issues.
      *  2- User must confirm that they want to perform a destructive canvas action (requires description_vars).
      * @param {Integer} warning_type - Type of warning to display
-     * @param {Array} description_vars - A warning_type dependent array of strings to interpolate into the popup description.
-     * @returns {Boolean} - User's dialog choice of abort (false) or success (true)
-     */
-    function display_warning(warning_type, description_vars = null) {
+     * @param {Array} modal_contents - A warning_type dependent array of strings to format into the warning's description placeholder values.
+     * @param {Function} callback_confirm - A callback function to invoke when the user presses the dialog's confirmation button.
+     * @param {Function} callback_abort - A callback function to invoke when the user presses the dialog's abort button. 
+    */
+    function promptWarningModal(
+        warning_type, modal_contents = null,
+        callback_confirm = null, callback_abort = null
+    ) {
         switch (warning_type) {
             case 1:
-                popupHeadingElement.textContent = "Warning: " + warningGridSizeHigh.heading;
-                popupDescriptionElement.textContent = warningGridSizeHigh.description;
+                modalHeadingElement.textContent = "Warning: " + warningDestructiveAction.heading;
+                modalDescriptionElement.textContent = warningDestructiveAction.description;
+                modalSuccessButton.textContent = warningDestructiveAction.confirmation_text;
+                modalAbortButton.textContent = warningDestructiveAction.abort_text;
+                
                 break;
-            case 1:
-                popupHeadingElement.textContent = "Warning: " + warningDesctructiveAction.heading;
+            case 2:
+                modalHeadingElement.textContent = "Warning: " + warningGridSizeHigh.heading;
                 
-                if (description_vars == null)
-                    throw new Error("Parameter description_vars required for warning_type 1.")
-                if (description_vars.length != 2)
-                    throw new Error("Parameter description_vars must contain exactly two items.")
-                
-                popupDescriptionElement.textContent = format(
-                    warningDesctructiveAction.description,
-                    description_vars[0],
-                    description_vars[1]
+                if (modal_contents == null)
+                    throw new Error("Parameter modal_contents required for warning_type 1.");
+                if (modal_contents.length != 2)
+                    throw new Error("Parameter modal_contents must contain exactly two items.");
+
+                modalDescriptionElement.textContent = format(
+                    warningGridSizeHigh.description,
+                    modal_contents[0],
+                    modal_contents[1]
                 );
+                
+                modalSuccessButton.textContent = warningGridSizeHigh.confirmation_text;
+                modalAbortButton.textContent = warningGridSizeHigh.abort_text;
+                
                 break;
             default:
                 throw new Error(`Invalid warning type: ${warning_type}`);   
         }
         
-        let success = false;
-        
-        // Success choice
-        popupSuccessElement.addEventListener('click', function() {
-            success = true;
-            
-            closeModal();
+        modalDialogElement.showModal();
+        modalFormElement.addEventListener('submit', function(event) {
+            // Forms with method="dialog" don't send input data.
+            // To circumvent this, we can pass the
+            // ... submission button the user clicked to FormData().
+            const formData = new FormData(modalFormElement, event.submitter);
+
+            for (const key of formData.keys()) {
+                if (key == 'confirm') {
+                    if (isFunction(callback_confirm)) {
+                        callback_confirm();
+                        return; // exit submission function
+                    }
+                }
+                else if (key == 'abort') {
+                    if (isFunction(callback_abort)) {
+                        callback_abort();
+                        return; // exit submission function
+                    }
+                }
+            }
         });
-        
-        // Abort mission
-        popupAbortElement.addEventListener('click', function() {
-            success = false;
-            
-            closeModal();
-        })
-        
-        return success;
     }
     
-    // Create grid
-    createGridButton.addEventListener('click', function() {
+    // Event handlers
+    
+    fillAreaButton.addEventListener('click', function() {
         // User passed invalid input
         if (sizeInputElement.value < 1) return;
+        // Don't remove and refill tiles if the desired size is already filled
+        if (drawingAreaElement.childElementCount == sizeInputElement.value * sizeInputElement.value)
+            return;
         
-        if (sizeInputElement.value > 1000) {
-            let userAllowsGridCreation = display_warning(
-                1,
-                [sizeInputElement.value, sizeInputElement.value]
+        if (sizeInputElement.value > 99) {
+            promptWarningModal(
+                warning_type = 2,
+                modal_contents = [sizeInputElement.value, sizeInputElement.value],
+                callback_confirm = function() { fillDrawingArea(sizeInputElement.value); }
             );
-            
-            if (userAllowsGridCreation) {
-                createGrid(sizeInputElement.value);
-            }
         }
         else {
-            createGrid(sizeInputElement.value);
+            fillDrawingArea(sizeInputElement.value);
         }
     });
     
-    // Reset grid
-    resetGridButton.addEventListener('click', function() {
-        let userAllowsGridDestruction = display_warning(2);
-        
-        if (userAllowsGridDestruction) {
-            destroyGrid();
-        }
+    // to learn: js has some weird behavior when skipping args
+    //  and using keyword args.
+    resetAreaButton.addEventListener('click', function() {
+        promptWarningModal(
+            warning_type = 1,
+            modal_contents = null,
+            callback_confirm = function() { resetDrawingArea(); }
+        );
     });
     
-    
+    // Remove for production: //
+    // Debug buttons
     document.getElementById('debug-close').addEventListener('click', function() {
-       closeModal(); 
+       modalDialogElement.close();
     });
+    
     document.getElementById('debug-open').addEventListener('click', function() {
-       openModal(); 
+        promptWarningModal(
+            warning_type = 1,
+            modal_contents = null,
+            callback_confirm = function() { resetDrawingArea(); },
+            callback_abort = null
+        );
     });
 });

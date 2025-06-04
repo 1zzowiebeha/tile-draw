@@ -60,17 +60,6 @@ Forms
 Modal background & Pop-up
 ======== */
 
-@keyframes pop-up {
-    from {
-        opacity: 0;
-        transform: translate(0, 120px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(0, 0);
-    }
-}
-
 #debug-menu {
     position: absolute;
     z-index: 900;
@@ -82,12 +71,43 @@ Modal background & Pop-up
     padding: .5rem 1rem;
 }
 
-.form--modal {
-    transition: .6s opacity;
+
+@keyframes pop-up {
+    from {
+        opacity: 0;
+        transform: translate(0, 120px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
 }
 
+@keyframes overlay-appear {
+    0% {
+        content-visibility: hidden;
+        background: rgba(0, 0, 0, 0);
+    }
+    1% {
+        content-visibility: visible;
+        background: rgba(0, 0, 0, 0);
+    }
+    100% {
+        content-visibility: visible;
+        background: rgba(0, 0, 0, .4);
+    }
+}
 
-#modal-overlay {
+#warning-modal {
+    border: none;
+    background: none;
+    
+    &::backdrop {
+        background: rgb(0 0 0 / .4);
+    }
+}
+
+/* #warning-modal {
     background: rgba(0, 0, 0, 0);
     
     height: 100%;
@@ -100,27 +120,33 @@ Modal background & Pop-up
     justify-content: center;
     align-items: center;
     
-    transition: .6s background;
-    
-    /* #modal-overlay:not(&.modal-overlay--closed) .form--modal {
-        animation: 1s pop-up 1;
-    } */
-}
-
-#modal-overlay.modal-overlay--closed {
-    background: rgba(0, 0, 0, 0);
+    --animation-duration: .6s;
     
     .form--modal {
-        animation: .6s pop-up ease-in-out reverse 1;
+        transition: .6s opacity;
+    }
+} */
+
+#modal-overlay.modal-overlay--closed {
+    animation: var(--animation-duration) overlay-appear reverse 1;
+    transition-behavior: allow-discrete;
+    animation-fill-mode: forwards;  
+
+    .form--modal {
+        /* animate to opacity: 0 */
+        animation: var(--animation-duration) pop-up ease-in-out reverse 1;
         animation-fill-mode: forwards;  
     }
 }
 
 #modal-overlay.modal-overlay--opened {
-    background: rgba(0, 0, 0, .4);
+    animation: var(--animation-duration) overlay-appear 1;
+    transition-behavior: allow-discrete;
+    animation-fill-mode: forwards;  
     
     .form--modal {
-        animation: .6s pop-up ease-in-out 1; 
+        /* animate to opacity: 1 */
+        animation: var(--animation-duration) pop-up ease-in-out 1;   
         animation-fill-mode: forwards;  
     }
 }
@@ -130,11 +156,20 @@ Drawing area
 ======== */
 
 #drawing-area {
+    display: flex;
+    flex-wrap: wrap;
+
     margin-top: 1rem;
     width: 30rem;
     aspect-ratio: 1/1;
     border: 1px solid grey;
     border-radius: 12px;
+    overflow: hidden;
+    
+    .drawing-area__tile {
+        background: red;
+        outline: 1px solid black;
+    }
 }
 
 
