@@ -216,28 +216,20 @@ document.addEventListener("DOMContentLoaded", function() {
         
         modalDialogElement.showModal();
         
-        modalAbortButton.addEventListener('click', function(event) {
-            // Prevent .close() from running
-            // Play closing animation (requires JS given that it's just before .close())
-            modalDialogElement.setAttribute('closing', '');
-            modalDialogElement.addEventListener('animationend', () => {
-                modalDialogElement.removeAttribute('closing');
-                modalDialogElement.close();
-            }, { once: true });
-        });
-        
         modalFormElement.addEventListener('submit', function(event) {
-            // Don't submit form if method is GET or POST
+            // Don't .close() the dialog:
             event.preventDefault()
             
             // Forms with method="dialog" don't send input data.
             // To circumvent this, we can pass the
             // ... submission button the user clicked to FormData().
-            const formData = new FormData(modalFormElement, event.submitter);
-            console.log(formData);
+            const formData = new FormData(modalFormElement, event.submitter)
             
             for (const key of formData.keys()) {
+                
                 if (key == 'confirm') {
+                    modalDialogElement.close();
+                    
                     if (isFunction(callback_confirm)) {
                         callback_confirm();
                         return; // exit submission function
@@ -245,6 +237,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 
                 else if (key == 'abort') {
+                    modalDialogElement.close();
+                    
                     if (isFunction(callback_abort)) {
                         callback_abort();
                         return; // exit submission function
@@ -255,6 +249,16 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     // Event handlers
+    modalDialogElement.addEventListener('close', (event) => {
+        console.log('hi')
+        // Play closing animation (requires JS given that it's just before .close())
+        modalDialogElement.setAttribute('closing', '');
+        
+        modalDialogElement.addEventListener('animationend', () => {
+            modalDialogElement.removeAttribute('closing');
+            modalDialogElement.close("hi");
+        }, { once: true });
+    });
     
     fillAreaButton.addEventListener('click', function() {
         // User passed invalid input
@@ -280,11 +284,10 @@ document.addEventListener("DOMContentLoaded", function() {
     resetAreaButton.addEventListener('click', function() {
         if (drawingAreaElement.childElementCount == 0) return;
         
-
         promptWarningModal(
             warning_type = 1,
             modal_contents = null,
-            callback_confirm = function() { resetDrawingArea(); }
+            callback_confirm = () => { resetDrawingArea(); }
         );
     });
     
@@ -298,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function() {
         promptWarningModal(
             warning_type = 1,
             modal_contents = null,
-            callback_confirm = function() { resetDrawingArea(); },
+            callback_confirm = () => { resetDrawingArea(); },
             callback_abort = null
         );
     });
