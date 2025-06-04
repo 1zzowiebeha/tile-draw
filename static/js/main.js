@@ -228,7 +228,8 @@ document.addEventListener("DOMContentLoaded", function() {
             for (const key of formData.keys()) {
                 
                 if (key == 'confirm') {
-                    modalDialogElement.close();
+                    // Fire a 'cancel' (preventable) event before a 'close' (after the fact) event.
+                    modalDialogElement.requestClose();
                     
                     if (isFunction(callback_confirm)) {
                         callback_confirm();
@@ -237,7 +238,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 
                 else if (key == 'abort') {
-                    modalDialogElement.close();
+                    // Fire a 'cancel' (preventable) event before a 'close' (after the fact) event.
+                    modalDialogElement.requestClose();
                     
                     if (isFunction(callback_abort)) {
                         callback_abort();
@@ -249,8 +251,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     // Event handlers
-    modalDialogElement.addEventListener('close', (event) => {
-        console.log('hi')
+    modalDialogElement.addEventListener('cancel', (event) => {
+        // Prevent modal from closing
+        
+        event.preventDefault();
         // Play closing animation (requires JS given that it's just before .close())
         modalDialogElement.setAttribute('closing', '');
         
