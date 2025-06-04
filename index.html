@@ -24,9 +24,10 @@
                 Open dialog
             </button>
         </div>
-        
+    
         <dialog id="warning-modal">
-            <form class="form form--modal" method="dialog">
+            <!--  method="dialog" cannot have .close() prevented via preventDefault() nor the 'cancel' event. -->
+            <form class="form form--modal">
                 
                 <h1 class="modal-heading">Placeholder text</h1>
                 <p class="modal-description">
@@ -37,7 +38,7 @@
                 <button id="modal-accept" class="btn btn--success" name="confirm" value="true">Create Grid</button>
             </form>
         </dialog>
-        
+    
         <main>    
             <article class="content">
                 <h1 class="mt-1">Grid Draw</h1>
@@ -53,7 +54,9 @@
                 
                 <!-- todo: accessibility -->
                 <div id="drawing-area">
-                    
+                    <p class="drawing-area__welcome-text">
+                        Create your grid
+                    </p>
                 </div>
             </article>
         </main>

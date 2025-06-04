@@ -72,14 +72,25 @@ Modal background & Pop-up
 }
 
 
-@keyframes pop-up {
+@keyframes slide-in {
     from {
         opacity: 0;
-        transform: translate(0, 120px);
+        top: 70vh;
     }
     to {
         opacity: 1;
-        transform: translate(0, 0);
+        top: 50vh;
+    }
+}
+
+@keyframes slide-out {
+    from {
+        opacity: 1;
+        top: 50vh;
+    }
+    to {
+        opacity: 0;
+        top: 70vh;
     }
 }
 
@@ -98,13 +109,52 @@ Modal background & Pop-up
     }
 }
 
+@keyframes bg-fadein {
+    0% {
+        background: rgb(0 0 0 / 0);
+    }
+    100% {
+        background: rgb(0 0 0 / .4);
+    }
+}
+
+@keyframes bg-fadeout {
+    0% {
+        background: rgb(0 0 0 / .4);
+    }
+    100% {
+        background: rgb(0 0 0 / 0);
+    }
+}
+
 #warning-modal {
+    --animation-duration: .6s;
+    
     border: none;
     background: none;
     
-    &::backdrop {
-        background: rgb(0 0 0 / .4);
-    }
+    position: absolute;
+    /* position top border and left border at center of screen */
+    top: 50%;
+    left: 50%;
+    /* translate half of modal height upwards and have of modal width to the left */
+    transform: translate(-50%, -50%);
+    
+    animation: var(--animation-duration) slide-in 1 ease running forwards;
+}
+
+#warning-modal[open]::backdrop {
+    animation: var(--animation-duration) fadein 1 ease running forwards;
+    animation-fill-mode: forwards;
+}
+
+#warning-modal[closing]::backdrop {
+    animation: var(--animation-duration) fadeout 1 ease running forwards;
+    animation-fill-mode: forwards;
+}
+
+#warning-modal[closing] {
+    animation: var(--animation-duration) slide-out 1 ease running forwards;
 }
 
 /* #warning-modal {
@@ -127,13 +177,13 @@ Modal background & Pop-up
     }
 } */
 
-#modal-overlay.modal-overlay--closed {
+/* #modal-overlay.modal-overlay--closed {
     animation: var(--animation-duration) overlay-appear reverse 1;
     transition-behavior: allow-discrete;
     animation-fill-mode: forwards;  
 
     .form--modal {
-        /* animate to opacity: 0 */
+
         animation: var(--animation-duration) pop-up ease-in-out reverse 1;
         animation-fill-mode: forwards;  
     }
@@ -145,11 +195,13 @@ Modal background & Pop-up
     animation-fill-mode: forwards;  
     
     .form--modal {
-        /* animate to opacity: 1 */
+ 
         animation: var(--animation-duration) pop-up ease-in-out 1;   
         animation-fill-mode: forwards;  
     }
 }
+
+*/
 
 /*========
 Drawing area
@@ -169,6 +221,20 @@ Drawing area
     .drawing-area__tile {
         background: red;
         outline: 1px solid black;
+    }
+    
+    .drawing-area__welcome-text {
+        /* block alignment */
+        align-self: center;
+        text-align: center;
+        width: 100%;
+        font-size: 2em;
+        font-weight: bold;
+        user-select: none;
+        
+        /* &::after {
+            content: "⬆️";
+        } */
     }
 }
 

@@ -215,12 +215,27 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
         modalDialogElement.showModal();
+        
+        modalAbortButton.addEventListener('click', function(event) {
+            // Prevent .close() from running
+            // Play closing animation (requires JS given that it's just before .close())
+            modalDialogElement.setAttribute('closing', '');
+            modalDialogElement.addEventListener('animationend', () => {
+                modalDialogElement.removeAttribute('closing');
+                modalDialogElement.close();
+            }, { once: true });
+        });
+        
         modalFormElement.addEventListener('submit', function(event) {
+            // Don't submit form if method is GET or POST
+            event.preventDefault()
+            
             // Forms with method="dialog" don't send input data.
             // To circumvent this, we can pass the
             // ... submission button the user clicked to FormData().
             const formData = new FormData(modalFormElement, event.submitter);
-
+            console.log(formData);
+            
             for (const key of formData.keys()) {
                 if (key == 'confirm') {
                     if (isFunction(callback_confirm)) {
@@ -228,6 +243,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         return; // exit submission function
                     }
                 }
+                
                 else if (key == 'abort') {
                     if (isFunction(callback_abort)) {
                         callback_abort();
@@ -247,7 +263,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (drawingAreaElement.childElementCount == sizeInputElement.value * sizeInputElement.value)
             return;
         
-        if (sizeInputElement.value > 99) {
+        if (sizeInputElement.value > 50) {
             promptWarningModal(
                 warning_type = 2,
                 modal_contents = [sizeInputElement.value, sizeInputElement.value],
@@ -262,6 +278,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // to learn: js has some weird behavior when skipping args
     //  and using keyword args.
     resetAreaButton.addEventListener('click', function() {
+        if (drawingAreaElement.childElementCount == 0) return;
+        
+
         promptWarningModal(
             warning_type = 1,
             modal_contents = null,
