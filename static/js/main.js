@@ -106,6 +106,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
+    // glitch: reset uses current value of input to regenerate instead of just setting brightness...
+    
+    // let last
+    
     /**
      * Reset the brightness of all tile divs in the drawing area.
      */
@@ -115,61 +119,6 @@ document.addEventListener("DOMContentLoaded", function() {
             tile.dataset.brightness = 1;
         }
     }
-    
-    /**
-     * Open animation for the modal window.
-     */
-    // function openModal() {
-    //     for (const animation of modalElement.getAnimations()) {
-    //         if (
-    //             animation.effect instanceof KeyframeEffect &&
-    //             modalElement.contains(animation.effect.target)
-    //         ) {
-    //         animation.cancel();
-    //         }
-    //     }
-  
-    //     modalElement.classList.remove('modal-overlay--closed');
-        
-    //     modalElement.offsetWidth;
-        
-    //     modalElement.classList.add('modal-overlay--opened');
-        
-    //     modalElement.offsetWidth; // force reflow
-    // }
-    
-    /**
-     * Close animation for the modal window.
-     */
-    // function closeModal() {
-    //     for (const animation of modalElement.getAnimations()) {
-    //         if (
-    //             animation.effect instanceof KeyframeEffect &&
-    //             modalElement.contains(animation.effect.target)
-    //         ) {
-    //         animation.cancel();
-    //         animation.play();
-    //         }
-    //     }
-        
-    //     modalElement.classList.remove('modal-overlay--opened');
-        
-    //     void modalElement.offsetWidth;
-        
-    //     modalElement.classList.add('modal-overlay--closed');
-        
-    //     for (const animation of modalElement.getAnimations()) {
-    //         if (
-    //             animation.effect instanceof KeyframeEffect &&
-    //             modalElement.contains(animation.effect.target)
-    //         ) {
-    //         animation.cancel();
-    //         animation.play();
-    //         }
-    //     }
-        
-    //     modalElement.offsetWidth; // force reflow
-    // }
     
     /**
      * Prompt the user to confirm their action.
@@ -250,25 +199,32 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
-    // Event handlers
+    ////////////////////
+    // Event handlers //
+    ////////////////////
+    
     modalDialogElement.addEventListener('cancel', (event) => {
-        // Prevent modal from closing
-        
+        // Prevent modal from closing (available to cancel event only)
         event.preventDefault();
-        // Play closing animation (requires JS given that it's just before .close())
+        
+        // Play closing animation
         modalDialogElement.setAttribute('closing', '');
         
         modalDialogElement.addEventListener('animationend', () => {
             modalDialogElement.removeAttribute('closing');
-            modalDialogElement.close("hi");
+            modalDialogElement.close();
         }, { once: true });
     });
     
     fillAreaButton.addEventListener('click', function() {
         // User passed invalid input
-        if (sizeInputElement.value < 1) return;
+        if (sizeInputElement.value < 1)
+            return;
         // Don't remove and refill tiles if the desired size is already filled
-        if (drawingAreaElement.childElementCount == sizeInputElement.value * sizeInputElement.value)
+        if (
+            drawingAreaElement.childElementCount == sizeInputElement.value * sizeInputElement.value
+            && !drawingAreaElement.children[0].classList.contains('drawing-area__welcome-text')
+        )
             return;
         
         if (sizeInputElement.value > 50) {
@@ -283,30 +239,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     
-    // to learn: js has some weird behavior when skipping args
+    // To learn: js has some weird behavior when skipping args
     //  and using keyword args.
     resetAreaButton.addEventListener('click', function() {
-        if (drawingAreaElement.childElementCount == 0) return;
-        
+        if (drawingAreaElement.childElementCount == 0)
+            return;
+        // No grid has been generated yet- nothing to reset.
+        if (drawingAreaElement.children[0].classList.contains('drawing-area__welcome-text'))
+            return;
+                
         promptWarningModal(
             warning_type = 1,
             modal_contents = null,
             callback_confirm = () => { resetDrawingArea(); }
-        );
-    });
-    
-    // Remove for production: //
-    // Debug buttons
-    document.getElementById('debug-close').addEventListener('click', function() {
-       modalDialogElement.close();
-    });
-    
-    document.getElementById('debug-open').addEventListener('click', function() {
-        promptWarningModal(
-            warning_type = 1,
-            modal_contents = null,
-            callback_confirm = () => { resetDrawingArea(); },
-            callback_abort = null
         );
     });
 });

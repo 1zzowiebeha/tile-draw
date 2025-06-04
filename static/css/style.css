@@ -60,18 +60,6 @@ Forms
 Modal background & Pop-up
 ======== */
 
-#debug-menu {
-    position: absolute;
-    z-index: 900;
-    left: 1rem;
-    top: 1rem;
-    border: 1px solid grey;
-    background: white;
-    border-radius: 12px;
-    padding: .5rem 1rem;
-}
-
-
 @keyframes slide-in {
     from {
         opacity: 0;
@@ -140,68 +128,23 @@ Modal background & Pop-up
     /* translate half of modal height upwards and have of modal width to the left */
     transform: translate(-50%, -50%);
     
-    animation: var(--animation-duration) slide-in 1 ease running forwards;
+    animation: var(--animation-duration) slide-in 1 ease forwards;
 }
 
 #warning-modal[open]::backdrop {
-    animation: var(--animation-duration) fadein 1 ease running forwards;
+    animation: var(--animation-duration) bg-fadein 1 ease forwards;
     animation-fill-mode: forwards;
 }
 
-#warning-modal[closing]::backdrop {
-    animation: var(--animation-duration) fadeout 1 ease running forwards;
-    animation-fill-mode: forwards;
-}
 
 #warning-modal[closing] {
-    animation: var(--animation-duration) slide-out 1 ease running forwards;
-}
-
-/* #warning-modal {
-    background: rgba(0, 0, 0, 0);
+    animation: var(--animation-duration) slide-out 1 ease forwards;
     
-    height: 100%;
-    width: 100%;
-    
-    position: absolute;
-    z-index: 1;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    --animation-duration: .6s;
-    
-    .form--modal {
-        transition: .6s opacity;
-    }
-} */
-
-/* #modal-overlay.modal-overlay--closed {
-    animation: var(--animation-duration) overlay-appear reverse 1;
-    transition-behavior: allow-discrete;
-    animation-fill-mode: forwards;  
-
-    .form--modal {
-
-        animation: var(--animation-duration) pop-up ease-in-out reverse 1;
-        animation-fill-mode: forwards;  
+    &::backdrop {
+        animation: var(--animation-duration) bg-fadeout 1 ease forwards;
+        animation-fill-mode: forwards;
     }
 }
-
-#modal-overlay.modal-overlay--opened {
-    animation: var(--animation-duration) overlay-appear 1;
-    transition-behavior: allow-discrete;
-    animation-fill-mode: forwards;  
-    
-    .form--modal {
- 
-        animation: var(--animation-duration) pop-up ease-in-out 1;   
-        animation-fill-mode: forwards;  
-    }
-}
-
-*/
 
 /*========
 Drawing area
@@ -226,15 +169,24 @@ Drawing area
     .drawing-area__welcome-text {
         /* block alignment */
         align-self: center;
+        
         text-align: center;
         width: 100%;
         font-size: 2em;
         font-weight: bold;
         user-select: none;
         
-        /* &::after {
-            content: "⬆️";
-        } */
+        position: relative;
+        
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: .4em;
+
+            background: no-repeat url("data:image/svg+xml,%3Csvg width='24' height='34' viewBox='0 0 24 34' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16.3797 17.8539L17.3739 17.9613L17.3739 17.9613L16.3797 17.8539ZM14.9969 0.632167C14.5176 0.357761 13.9066 0.523852 13.6322 1.00314L9.16046 8.81363C8.88605 9.29292 9.05214 9.90392 9.53143 10.1783C10.0107 10.4527 10.6217 10.2866 10.8961 9.80735L14.871 2.86469L21.8136 6.83954C22.2929 7.11395 22.9039 6.94786 23.1783 6.46857C23.4527 5.98928 23.2866 5.37829 22.8073 5.10388L14.9969 0.632167ZM0.557483 32.0168C0.470022 33.013 0.470607 33.013 0.471247 33.0131C0.471532 33.0131 0.472227 33.0131 0.472798 33.0132C0.473941 33.0133 0.475301 33.0134 0.476877 33.0135C0.480029 33.0138 0.484044 33.0141 0.48891 33.0145C0.49864 33.0153 0.511773 33.0163 0.528207 33.0174C0.56107 33.0197 0.607154 33.0227 0.665635 33.0257C0.782565 33.0317 0.949255 33.038 1.1591 33.0401C1.57846 33.0442 2.17219 33.0317 2.88708 32.9661C4.31271 32.8353 6.24374 32.4913 8.24034 31.6309C12.2972 29.8826 16.5007 26.0456 17.3739 17.9613L16.3797 17.8539L15.3855 17.7465C14.5947 25.068 10.8871 28.3125 7.44882 29.7942C5.69786 30.5488 3.98535 30.8569 2.70432 30.9745C2.06588 31.0331 1.5405 31.0438 1.17908 31.0402C0.998541 31.0384 0.859427 31.033 0.768149 31.0283C0.722526 31.026 0.688905 31.0238 0.66809 31.0223C0.657684 31.0216 0.650485 31.021 0.646592 31.0207C0.644646 31.0206 0.643527 31.0205 0.643247 31.0205C0.643108 31.0205 0.643178 31.0205 0.64346 31.0205C0.643601 31.0205 0.643973 31.0205 0.644043 31.0205C0.644466 31.0206 0.644943 31.0206 0.557483 32.0168ZM16.3797 17.8539L17.3739 17.9613C17.7541 14.4407 17.2639 10.2403 16.6988 6.97332C16.4144 5.32871 16.1069 3.89883 15.8704 2.87939C15.7521 2.36939 15.6514 1.96139 15.58 1.67977C15.5443 1.53894 15.5159 1.42966 15.4962 1.35498C15.4864 1.31763 15.4787 1.28893 15.4735 1.26926C15.4708 1.25942 15.4688 1.25184 15.4674 1.24656C15.4667 1.24392 15.4661 1.24186 15.4657 1.24038C15.4655 1.23963 15.4654 1.23904 15.4652 1.23859C15.4652 1.23836 15.4651 1.23814 15.4651 1.23803C15.465 1.23783 15.465 1.23768 14.5 1.5C13.535 1.76232 13.535 1.76224 13.535 1.76219C13.535 1.76223 13.535 1.76222 13.535 1.76229C13.535 1.76242 13.5351 1.7627 13.5352 1.76313C13.5355 1.76398 13.5359 1.7654 13.5364 1.7674C13.5375 1.7714 13.5392 1.77769 13.5414 1.78622C13.546 1.80328 13.5529 1.82931 13.562 1.86392C13.5803 1.93314 13.6072 2.03668 13.6414 2.17151C13.7098 2.44121 13.8072 2.83588 13.9222 3.33131C14.1521 4.32273 14.4514 5.71473 14.7281 7.31419C15.2852 10.5354 15.7348 14.5118 15.3855 17.7465L16.3797 17.8539Z' fill='%23362E2E'/%3E%3C/svg%3E%0A") 50% 50% / 100% 100%;
+            width: 2em;
+            height: 2em;
+        }
     }
 }
 
