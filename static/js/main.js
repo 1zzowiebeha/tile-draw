@@ -16,31 +16,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const sizeInputElement = document.getElementById("grid-size-input"); 
     
     const modalDialogElement = document.getElementById("warning-modal"); 
-    const modalFormElement = document.querySelector(".form--modal");
-    const modalHeadingElement = document.querySelector(".form--modal .modal-heading");
-    const modalDescriptionElement = document.querySelector(".form--modal .modal-description");
+    const modalFormElement = document.getElementById("warning-modal__form");
+    const modalHeadingElement = document.querySelector("#warning-modal__form .modal-heading");
+    const modalDescriptionElement = document.querySelector("#warning-modal__form .modal-description");
     const modalSuccessButton = document.getElementById("modal-accept");
     const modalAbortButton = document.getElementById("modal-abort");
-    
-    // Warning #1 data for promptWarningModal()
-    const warningDestructiveAction = {
-        heading: "Drawing will be deleted",
-        description: "Are you sure you want to reset your canvas?",
-        confirmation_text: 'Delete Grid',
-        abort_text: 'Abort',
-    }
-    
-    // Warning #2 data for promptWarningModal()
-    const warningGridSizeHigh = {
-        heading: "Grid length high",
-        description: `
-            A grid size of
-            {0}x{1}
-            may cause performance issues.
-        `,
-        confirmation_text: 'Create Grid',
-        abort_text: 'Abort',
-    }
     
     //////////////////////
     // Helper Functions //
@@ -130,48 +110,42 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
+    function getProp(object, property) {
+        // https://eslint.org/docs/latest/rules/no-prototype-builtins
+        if (Object.prototype.hasOwnProperty.call(object, property)) {
+            return object[property];
+        }
+        else {
+            return null;
+        }
+    }
+    
     /**
-     * Prompt the user to confirm their action.
-     *  1- User's chosen grid size may cause performance issues.
-     *  2- User must confirm that they want to perform a destructive canvas action (requires description_vars).
-     * @param {Integer} warning_type - Type of warning to display
-     * @param {Array} modal_contents - A warning_type dependent array of strings to format into the warning's description placeholder values.
+     * Prompt the user to select an action with a modal.
+     * 
+     * modal_contents properties available:
+     * - modalHeader (string): the modal's header text
+     * - modalDescription (string): the modal's description text
+     * - modalConfirmationText (string): the modal's confirm button text
+     * - modalAbortText (string): the modal's abort button text
+     * 
+     * @param {Array} modal_contents - A map of settings to apply to the modal.
      * @param {Function} callback_confirm - A callback function to invoke when the user presses the dialog's confirmation button.
      * @param {Function} callback_abort - A callback function to invoke when the user presses the dialog's abort button. 
     */
-    function promptWarningModal(
-        warning_type, modal_contents = null,
+    function promptModal(
+        modal_contents = {},
         callback_confirm = null, callback_abort = null
     ) {
-        switch (warning_type) {
-            case 1:
-                modalHeadingElement.textContent = "Warning: " + warningDestructiveAction.heading;
-                modalDescriptionElement.textContent = warningDestructiveAction.description;
-                modalSuccessButton.textContent = warningDestructiveAction.confirmation_text;
-                modalAbortButton.textContent = warningDestructiveAction.abort_text;
-                
-                break;
-            case 2:
-                modalHeadingElement.textContent = "Warning: " + warningGridSizeHigh.heading;
-                
-                if (modal_contents == null)
-                    throw new Error("Parameter modal_contents required for warning_type 1.");
-                if (modal_contents.length != 2)
-                    throw new Error("Parameter modal_contents must contain exactly two items.");
-
-                modalDescriptionElement.textContent = format(
-                    warningGridSizeHigh.description,
-                    modal_contents[0],
-                    modal_contents[1]
-                );
-                
-                modalSuccessButton.textContent = warningGridSizeHigh.confirmation_text;
-                modalAbortButton.textContent = warningGridSizeHigh.abort_text;
-                
-                break;
-            default:
-                throw new Error(`Invalid warning type: ${warning_type}`);   
-        }
+        const modalHeader = getProp(modal_contents, "modalHeader") || "header not set";
+        const modalDescription = getProp(modal_contents, "modalDescription") || "description not set";
+        const modalConfirmationText = getProp(modal_contents, "modalConfirmationText") || "Accept";
+        const modalAbortText = getProp(modal_contents, "modalAbortText") || "Abort";
+         
+        modalHeadingElement.textContent = modalHeader;
+        modalDescriptionElement.textContent = modalDescription;
+        modalSuccessButton.textContent = modalConfirmationText;
+        modalAbortButton.textContent = modalAbortText;
         
         modalDialogElement.showModal();
         
@@ -239,9 +213,18 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         
         if (sizeInputElement.value > 50) {
-            promptWarningModal(
-                warning_type = 2,
-                modal_contents = [sizeInputElement.value, sizeInputElement.value],
+            const modalDescription = format(
+                "A grid size of {0}x{1} may cause performance issues.",
+                sizeInputElement.value,
+                sizeInputElement.value
+            )
+            
+            promptModal(
+                modal_contents = {
+                    modalHeader: "Grid length high",
+                    modalDescription: modalDescription,
+                    modalConfirmationText: "Delete Grid",
+                },
                 callback_confirm = function() { fillDrawingArea(sizeInputElement.value); }
             );
         }
@@ -256,9 +239,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (drawingAreaElement.children[0].classList.contains('drawing-area__welcome-text'))
             return;
                 
-        promptWarningModal(
-            warning_type = 1,
-            modal_contents = null,
+        promptModal(
+            modal_contents = {
+                modalHeader: "Drawing will be deleted",
+                modalDescription: "Are you sure you want to reset your canvas?",
+                modalConfirmationText: "Delete Grid",
+            },
             callback_confirm = () => { resetDrawingArea(); }
         );
     });
