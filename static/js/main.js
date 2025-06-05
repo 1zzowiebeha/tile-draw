@@ -58,6 +58,22 @@ document.addEventListener("DOMContentLoaded", function() {
         }
        
     }
+    
+    /**
+     * Return an object's property value if it exists,
+     * ... otherwise return null.
+     * @param {Any} object - Any object.
+     * @param {String} property - The object's key to check for.
+     */
+    function getProp(object, property) {
+        // https://eslint.org/docs/latest/rules/no-prototype-builtins
+        if (Object.prototype.hasOwnProperty.call(object, property)) {
+            return object[property];
+        }
+        else {
+            return null;
+        }
+    }
 
     ////////////////////
     // Page Functions //
@@ -80,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     /**
      * Populate the drawing area with tile divs.
-     * * @param {Integer} area_size - Length and width of tile area
+     * * @param {Integer} area_size - Length and width of tile area.
      */
     function fillDrawingArea(area_size) {
         drawingAreaElement.innerHTML = "";
@@ -110,24 +126,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
-    function getProp(object, property) {
-        // https://eslint.org/docs/latest/rules/no-prototype-builtins
-        if (Object.prototype.hasOwnProperty.call(object, property)) {
-            return object[property];
-        }
-        else {
-            return null;
-        }
-    }
-    
     /**
      * Prompt the user to select an action with a modal.
      * 
      * modal_contents properties available:
-     * - modalHeader (string): the modal's header text
-     * - modalDescription (string): the modal's description text
-     * - modalConfirmationText (string): the modal's confirm button text
-     * - modalAbortText (string): the modal's abort button text
+     * - modalHeader (string): the modal's header text.
+     * - modalDescription (string): the modal's description text.
+     * - modalConfirmationText (string): the modal's confirm button text.
+     * - modalAbortText (string): the modal's abort button text.
      * 
      * @param {Array} modal_contents - A map of settings to apply to the modal.
      * @param {Function} callback_confirm - A callback function to invoke when the user presses the dialog's confirmation button.
