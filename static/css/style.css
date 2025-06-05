@@ -28,6 +28,11 @@ Content wrapper
 ======== */
 
 .content {
+    /*
+        We could use flex, but this is cleaner, since
+        we don't need align-items and flex-direction
+        for a column layout with grid. grid-auto-* does it for us :)
+    */
     display: grid;
     justify-items: center;
 }
@@ -43,9 +48,9 @@ Form base
     width: fit-content;
     padding: 2rem 1rem;
     
-    /* More maintainable property compared to margin-top
-       so as to override gap later on in the style. We could use collapsing margins,
-       but this makes more sense? idk actually */
+    /* More maintainable property compared to margin-top,
+       as we can override gap later on in the style if we choose.
+       We could use collapsing margins, but the cascade is easier to quickly see. */
     display: grid;
     row-gap: .5rem;
     
