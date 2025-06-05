@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
      * Interpolates variables into a string.
      * Taken from: https://www.geeksforgeeks.org/javascript-string-formatting/
      * Will replace even if the user wants to have a string with a {<digit>} literal,
-     * where <digit> is equal to an item's index within the passed ...values.
+     * ... where <digit> is equal to an item's index within the passed ...values.
      * @param {String} str - String to format variables into.
      * @param {...String} values - Values to format into string.
      */
