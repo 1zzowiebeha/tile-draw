@@ -1,5 +1,5 @@
 /**
- * @typedef {Number} Integer
+ * @typedef {Number} UnsignedInteger
  */
 
 // To learn: js has some weird behavior when skipping args
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     /**
      * Populate the drawing area with tile divs.
-     * * @param {Integer} area_size - Length and width of tile area.
+     * * @param {UnsignedInteger} area_size - The length and width of tile area. Must be greater than zero.
      */
     function fillDrawingArea(area_size) {
         drawingAreaElement.innerHTML = "";
