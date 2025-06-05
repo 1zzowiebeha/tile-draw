@@ -2,21 +2,27 @@
  * @typedef {Number} Integer
  */
 
+// To learn: js has some weird behavior when skipping args
+//  and using keyword args.
 
 document.addEventListener("DOMContentLoaded", function() {
+    /////////////////
+    //  Variables  //
+    /////////////////
+    
     const drawingAreaElement = document.getElementById("drawing-area"); 
     const fillAreaButton = document.getElementById("fill-area-button"); 
     const resetAreaButton = document.getElementById("reset-area-button"); 
     const sizeInputElement = document.getElementById("grid-size-input"); 
     
     const modalDialogElement = document.getElementById("warning-modal"); 
-        const modalFormElement = document.querySelector(".form--modal");
-            const modalHeadingElement = document.querySelector(".form--modal .modal-heading");
-            const modalDescriptionElement = document.querySelector(".form--modal .modal-description");
-            const modalSuccessButton = document.getElementById("modal-accept");
-            const modalAbortButton = document.getElementById("modal-abort");
+    const modalFormElement = document.querySelector(".form--modal");
+    const modalHeadingElement = document.querySelector(".form--modal .modal-heading");
+    const modalDescriptionElement = document.querySelector(".form--modal .modal-description");
+    const modalSuccessButton = document.getElementById("modal-accept");
+    const modalAbortButton = document.getElementById("modal-abort");
     
-    // Warning 1 for promptWarningModal()
+    // Warning #1 data for promptWarningModal()
     const warningDestructiveAction = {
         heading: "Drawing will be deleted",
         description: "Are you sure you want to reset your canvas?",
@@ -24,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
         abort_text: 'Abort',
     }
     
-    // Warning 2 for promptWarningModal()
+    // Warning #2 data for promptWarningModal()
     const warningGridSizeHigh = {
         heading: "Grid length high",
         description: `
@@ -35,6 +41,10 @@ document.addEventListener("DOMContentLoaded", function() {
         confirmation_text: 'Create Grid',
         abort_text: 'Abort',
     }
+    
+    //////////////////////
+    // Helper Functions //
+    //////////////////////
     
     /**
      * Interpolates variables into a string.
@@ -69,6 +79,10 @@ document.addEventListener("DOMContentLoaded", function() {
        
     }
 
+    ////////////////////
+    // Page Functions //
+    ////////////////////
+    
     /**
      * Invoked when a drawing area tile is moused over.
      * * @param {Event} event - Event provided by the event listener.
@@ -79,8 +93,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const newBrightnessValue = tile.dataset.brightness - 0.1;
         tile.style.filter = 'brightness(' + newBrightnessValue + ')';
         
-        // Store brightness in a data attribute so we don't need to parse
-        //  the style string for later reference.
+        // Store brightness in a data attribute so that we don't need to parse
+        // ... the style string for later reference.
         tile.dataset.brightness = newBrightnessValue;
     }
     
@@ -105,10 +119,6 @@ document.addEventListener("DOMContentLoaded", function() {
             newTileElement.dataset.brightness = 1;
         }
     }
-    
-    // glitch: reset uses current value of input to regenerate instead of just setting brightness...
-    
-    // let last
     
     /**
      * Reset the brightness of all tile divs in the drawing area.
@@ -175,7 +185,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const formData = new FormData(modalFormElement, event.submitter)
             
             for (const key of formData.keys()) {
-                
                 if (key == 'confirm') {
                     // Fire a 'cancel' (preventable) event before a 'close' (after the fact) event.
                     modalDialogElement.requestClose();
@@ -203,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Event handlers //
     ////////////////////
     
+    // Modal dialog button clicked
     modalDialogElement.addEventListener('cancel', (event) => {
         // Prevent modal from closing (available to cancel event only)
         event.preventDefault();
@@ -216,11 +226,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }, { once: true });
     });
     
+    // Fill button clicked
     fillAreaButton.addEventListener('click', function() {
-        // User passed invalid input
+        // User altered form control and passed invalid input
         if (sizeInputElement.value < 1)
             return;
-        // Don't remove and refill tiles if the desired size is already filled
+        // Don't regenerate tiles if the desired size is already filled
         if (
             drawingAreaElement.childElementCount == sizeInputElement.value * sizeInputElement.value
             && !drawingAreaElement.children[0].classList.contains('drawing-area__welcome-text')
@@ -239,11 +250,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     
-    // To learn: js has some weird behavior when skipping args
-    //  and using keyword args.
+    // Reset button clicked
     resetAreaButton.addEventListener('click', function() {
-        if (drawingAreaElement.childElementCount == 0)
-            return;
         // No grid has been generated yet- nothing to reset.
         if (drawingAreaElement.children[0].classList.contains('drawing-area__welcome-text'))
             return;
