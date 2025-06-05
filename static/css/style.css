@@ -1,4 +1,13 @@
 /*========
+Variables
+======== */
+
+:root {
+    --root-canvas-color: #fdfdfa;
+    --text-color: #231112;
+}
+
+/*========
 Resets
 ======== */
 
@@ -13,14 +22,14 @@ html {
 }
 
 body {
-    background: #fdfdfa;
+    background: var(--root-canvas-color);
     height: 100%;
 }
 
 
 h1, p, label, button, input {
     font-family: "figtree", sans-serif;
-    color: #231112;
+    color: var(--text-color);
 }
 
 /*========
@@ -42,7 +51,7 @@ Form base
 ======== */
 
 .form {
-    background: #fdfdfa;
+    background: var(--root-canvas-color);
     border: 1px solid grey;
     border-radius: 12px;
     width: fit-content;
