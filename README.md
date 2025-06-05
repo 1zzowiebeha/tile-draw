@@ -6,4 +6,4 @@ built with HTML, CSS, and vanilla JavaScript.
 
 # Requirements:
 
-Firefox v139+ is required. (a recent update)
+Firefox v139+ is required. (released May 27th, 2025)
