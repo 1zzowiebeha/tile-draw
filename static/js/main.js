@@ -139,10 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
      * @param {Function} callback_confirm - A callback function to invoke when the user presses the dialog's confirmation button.
      * @param {Function} callback_abort - A callback function to invoke when the user presses the dialog's abort button. 
     */
-    function promptModal(
-        modal_contents = {},
-        callback_confirm = null, callback_abort = null
-    ) {
+    function promptModal(modal_contents = {}, callback_confirm = null, callback_abort = null) {
         const modalHeader = getProp(modal_contents, "modalHeader") || "header not set";
         const modalDescription = getProp(modal_contents, "modalDescription") || "description not set";
         const modalConfirmationText = getProp(modal_contents, "modalConfirmationText") || "Accept";
@@ -156,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function() {
         modalDialogElement.showModal();
         
         modalFormElement.addEventListener('submit', function(event) {
-            // Don't .close() the dialog:
+            // Prevent GET request:
             event.preventDefault()
             
             // Forms with method="dialog" don't send input data.
@@ -197,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Prevent modal from closing (available to cancel event only)
         event.preventDefault();
         
-        // Play closing animation
+        // Trigger CSS to play closing animation:
         modalDialogElement.setAttribute('closing', '');
         
         modalDialogElement.addEventListener('animationend', () => {
@@ -231,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     modalDescription: modalDescription,
                     modalConfirmationText: "Delete Grid",
                 },
-                callback_confirm = function() { fillDrawingArea(sizeInputElement.value); }
+                callback_confirm = () => fillDrawingArea(sizeInputElement.value)
             );
         }
         else {
@@ -251,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 modalDescription: "Are you sure you want to reset your canvas?",
                 modalConfirmationText: "Delete Grid",
             },
-            callback_confirm = () => { resetDrawingArea(); }
+            callback_confirm = resetDrawingArea
         );
     });
 });
